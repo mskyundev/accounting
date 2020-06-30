@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd">
+	
+	<!-- auto-config : 로그인 / 로그아웃 / HTTP기본 인증 기능 등을 제공 -->
+	<!-- use-expressions : SpEl(스프링 표현 언어) 사용 -->
+	<http auto-config="true" use-expressions="true"> 
+		<!--intercept-url : 해당 URL 에 접근하기위한 권한을 설정하여준다. 
+			access : 설정 권한. 권한은 위쪽이 우선시된다.(접근가능한 IP 등을 설정 가능). 상세페이지의 권한 부터 위에서 설정
+				1. permitAll : 모두 접근 가능
+				2. denyAll : 모두 접근 제한
+				3. 비회원(GUEST), 준회원(USER), 정회원(MEMBER), 관리자(ADMIN)
+				4. hasRole('ROLE_XXX') : 하나의 권한
+				5. hasAnyRole('ROLE_XXX','ROLE_XXX') : 다중 권한 
+				6. isAnonymous() : 인증 하지 않은 사용자
+				7. isRememberMe() : remember-me 기능으로 로그인한 사용자
+				8. isAuthenticated() : 인증 한 사용자
+				9. isFullyAuthenticated() : 인증하고 remember-me 기능이 아닌 방법으로 로그인한 사용자  -->
+		<intercept-url pattern="/login" access="permitAll"/>
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+		
+		<!--form-login : 사용자이름, 비밀번호를 가지고 있는 폼 기반 login인증 방법
+			login-page : 로그인 페이지 url 설정
+			default-target-url : 로그인 성공 시 이동 페이지
+			username-parameter : jsp파일 form에 들어갈 id name값(생략 가능)
+			password-parameter : jsp파일 form에 들어갈 password name값(생략 가능)
+			authentication-failure-url : 로그인 실패시 이동 페이지
+			always-use-default-target : 로그인 성공시 default url로 갈건지 아닌지 설정
+			authentication-success-handler-ref : 로그인 성공 시 성공시 호출할 클래스
+			authentication-failure-handler-ref : 로그인 실패시 성공시 호출할 클래스
+			authentication-details-source-ref
+			login-processing-url : 로그인 처리를 요청할  URL. 보여지는 URL 일뿐 j_spring_security_check 호출되어 로그인 처리한다.
+		 -->
+		<form-login login-page="/login"
+			default-target-url="/"
+			username-parameter="id"
+			password-parameter="pw"
+			authentication-failure-url="/login?error"
+			always-use-default-target="true"/>
+		
+		<!--logout : 로그아웃
+			invalidate-session : 세션 삭제 여부
+			logout-success-url : 로그아웃 후 이동 url
+			logout-url : 로그아웃 처리를 요청할  URL. 보여지는 URL 일뿐 j_spring_security_logout 호출되어 로그아웃을 처리한다.
+			delete-cookies : 삭제할 쿠키명
+			success-handler-ref : 로그아웃 성공시 호출할 클래스 -->
+		<logout invalidate-session="true"
+			logout-success-url="/"
+			logout-url="/logout" />
+		
+		<!-- CSRF(Cross Stie Request Forgery) : 사이트간 요청 위조 방어 -->
+		<csrf/>
+	</http>
+	<!-- authentication-manager : Spring Security를 구성하는 다섯 가지 컴포넌트 중 인증을 담당한다.
+			인증을 시도(authenticate 메소드 호출)해서 성공하면 Authentication 객체를 반환하고,
+			실패하면 AuthenticationException 예외를 던지는 메소드를 가지고 있습니다.
+		authentication-provider : 
+		user-service-ref : 사용자 id, pw를 제공하는 서비스 등록  -->
+	<authentication-manager>
+		<!-- <authentication-provider user-service-ref="memberService"></authentication-provider> -->
+		<authentication-provider>
+			<user-service>
+				<user name="admin" password="1234" authorities="ROLE_USER" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<!-- <beans:bean id="memberService"></beans:bean> -->
+	
+	
+</beans:beans>
