@@ -22,7 +22,6 @@
 				8. isAuthenticated() : 인증 한 사용자
 				9. isFullyAuthenticated() : 인증하고 remember-me 기능이 아닌 방법으로 로그인한 사용자  -->
 		<intercept-url pattern="/login" access="permitAll"/>
-		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
 		
 		<!--form-login : 사용자이름, 비밀번호를 가지고 있는 폼 기반 login인증 방법
 			login-page : 로그인 페이지 url 설정
@@ -42,7 +41,7 @@
 			password-parameter="pw"
 			authentication-failure-url="/login?error"
 			always-use-default-target="true"/>
-		
+			
 		<!--logout : 로그아웃
 			invalidate-session : 세션 삭제 여부
 			logout-success-url : 로그아웃 후 이동 url
