@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form name="frm" method="post">
+<form name="frm" method="post" action="loginCheck">
 	<div>
 		<label for="userID">ID</label>
 		<input id="userID" type="text" name="id" placeholder="ID" required>
